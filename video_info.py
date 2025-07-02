@@ -4,6 +4,7 @@ import os
 
 app = Flask(__name__)
 
+# Caminho absoluto do cookies.txt na raiz do projeto
 cookie_path = os.path.join(os.path.dirname(__file__), "cookies.txt")
 use_cookies = os.path.isfile(cookie_path)
 
@@ -23,11 +24,11 @@ def video_info():
         'skip_download': True,
         'forcejson': True,
         'extract_flat': False,
-        'format': 'bestvideo+bestaudio/best'
+        'format': 'bestvideo+bestaudio/best',
     }
 
     if use_cookies:
-        ydl_opts["cookiefile"] = cookie_path
+        ydl_opts['cookiefile'] = cookie_path
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
