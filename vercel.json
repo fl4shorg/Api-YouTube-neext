@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "video_info.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/video_info",
+      "methods": ["GET"],
+      "dest": "video_info.py"
+    }
+  ]
+}
