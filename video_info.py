@@ -56,4 +56,4 @@ def video_info():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-handler = app
+handler = app  # obrigatório para Vercel reconhecer
