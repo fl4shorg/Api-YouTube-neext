@@ -1,0 +1,10 @@
+app = "youtube-api-neext"
+
+[env]
+PORT = "8080"
+
+[build]
+builder = "Docker"
+
+[experimental]
+auto_rollback = true
