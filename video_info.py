@@ -6,12 +6,7 @@ import traceback
 app = Flask(__name__)
 
 cookie_path = os.path.join(os.path.dirname(__file__), "cookies.txt")
-use_cookies = os.path.isfile(cookie_path)
-
-if use_cookies:
-    print("✅ cookies.txt encontrado. Usando para autenticação.")
-else:
-    print("⚠️ cookies.txt NÃO encontrado. Algumas URLs podem falhar.")
+use_cookies = os.path.exists(cookie_path)
 
 @app.route('/video_info', methods=['GET'])
 def video_info():
@@ -25,45 +20,44 @@ def video_info():
         'skip_download': True,
         'forcejson': True,
         'extract_flat': False,
-        'format': 'bestvideo+bestaudio/best'
+        'format': 'bestvideo+bestaudio/best',
     }
 
     if use_cookies:
-        ydl_opts['cookiefile'] = cookie_path
+        ydl_opts["cookiefile"] = cookie_path
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(video_url, download=False)
 
-            dados = {
+            resultado = {
                 "title": info.get("title"),
                 "uploader": info.get("uploader"),
                 "thumbnail": info.get("thumbnail"),
                 "duration": info.get("duration"),
-                "filesize_approx": info.get("filesize_approx"),
                 "view_count": info.get("view_count"),
+                "filesize_approx": info.get("filesize_approx"),
                 "formats": []
             }
 
-            for fmt in info.get("formats", []):
-                if fmt.get("url"):
-                    dados["formats"].append({
-                        "format_id": fmt.get("format_id"),
-                        "ext": fmt.get("ext"),
-                        "resolution": f"{fmt.get('width')}x{fmt.get('height')}" if fmt.get("width") and fmt.get("height") else None,
-                        "filesize": fmt.get("filesize"),
-                        "url": fmt.get("url")
+            for f in info.get("formats", []):
+                if f.get("url"):
+                    resultado["formats"].append({
+                        "format_id": f.get("format_id"),
+                        "ext": f.get("ext"),
+                        "resolution": f"{f.get('width')}x{f.get('height')}" if f.get("width") else None,
+                        "filesize": f.get("filesize"),
+                        "url": f.get("url")
                     })
 
-            return jsonify(dados)
+            return jsonify(resultado)
 
     except Exception as e:
-        tb = traceback.format_exc()
         return jsonify({
             "error": str(e),
-            "traceback": tb
+            "traceback": traceback.format_exc()
         }), 500
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port)
