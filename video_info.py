@@ -10,7 +10,7 @@ use_cookies = os.path.exists(cookie_path)
 if not use_cookies:
     print("⚠️ cookies.txt não encontrado, continuará sem cookies.")
 
-@app.route('/api/video_info', methods=['GET'])
+@app.route('/video_info', methods=['GET'])
 def video_info():
     video_url = request.args.get('url')
     if not video_url:
@@ -56,4 +56,6 @@ def video_info():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-handler = app  # obrigatório para Vercel reconhecer
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
