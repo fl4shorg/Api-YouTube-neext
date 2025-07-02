@@ -4,11 +4,13 @@ import os
 
 app = Flask(__name__)
 
-cookie_path = "cookies.txt"
-use_cookies = os.path.exists(cookie_path)
+cookie_path = os.path.join(os.path.dirname(__file__), "cookies.txt")
+use_cookies = os.path.isfile(cookie_path)
 
 if not use_cookies:
     print("⚠️ cookies.txt não encontrado, continuará sem cookies.")
+else:
+    print("✅ cookies.txt encontrado e será usado.")
 
 @app.route('/video_info', methods=['GET'])
 def video_info():
@@ -21,11 +23,11 @@ def video_info():
         'skip_download': True,
         'forcejson': True,
         'extract_flat': False,
-        'format': 'bestvideo+bestaudio/best',
+        'format': 'bestvideo+bestaudio/best'
     }
 
     if use_cookies:
-        ydl_opts['cookiefile'] = cookie_path
+        ydl_opts["cookiefile"] = cookie_path
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
