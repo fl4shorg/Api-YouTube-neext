@@ -5,7 +5,9 @@ import os
 app = Flask(__name__)
 
 cookie_path = "cookies.txt"
-if not os.path.exists(cookie_path):
+use_cookies = os.path.exists(cookie_path)
+
+if not use_cookies:
     print("⚠️ cookies.txt não encontrado, continuará sem cookies.")
 
 @app.route('/api/video_info', methods=['GET'])
@@ -22,7 +24,7 @@ def video_info():
         'format': 'bestvideo+bestaudio/best',
     }
 
-    if os.path.exists(cookie_path):
+    if use_cookies:
         ydl_opts['cookiefile'] = cookie_path
 
     try:
@@ -54,5 +56,4 @@ def video_info():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Vercel exige exportar o app com nome handler
 handler = app
