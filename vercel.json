@@ -8,7 +8,7 @@
   ],
   "routes": [
     {
-      "src": "/api/video_info",
+      "src": "/video_info",
       "methods": ["GET"],
       "dest": "video_info.py"
     }
